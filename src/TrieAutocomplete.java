@@ -95,7 +95,7 @@ public class TrieAutocomplete implements Autocomplete.Autocompletor {
      * topKMatches("b", 2) should return {"bell", "bat"}, but topKMatches("a",
      * 2) should return {"air"}
      *
-     * @param prefix
+     * @param prefix 
      *            - A prefix which all returned words must start with
      * @param k
      *            - The (maximum) number of words to be returned
