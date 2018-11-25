@@ -1,10 +1,4 @@
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 
 public class Autocomplete {
         /**
@@ -284,11 +278,18 @@ public class Autocomplete {
             return 0.0;
         }
     }
+    // ---------------------------------------------------------------------------------------------------------------
+    // ------------------------------------------- MY CODE HERE ------------------------------------------------------
+    // ---------------------------------------------------------------------------------------------------------------
+
     /**
      * General trie/priority queue algorithm for implementing Autocompletor
+     * Modified for the use of Auburn University's COMP 3270 (Introduction
+     * to Algorithms) Course and its specifications.
      * 
      * @author Austin Lu
      * @author Jeff Forbes
+     * @author Paul Chong
      */
     public static class TrieAutocomplete implements Autocompletor {
 
@@ -301,7 +302,7 @@ public class Autocomplete {
          * Constructor method for TrieAutocomplete. Should initialize the trie
          * rooted at myRoot, as well as add all nodes necessary to represent the
          * words in terms.
-         * 
+         *
          * @param terms
          *            - The words we will autocomplete from
          * @param weights
@@ -326,14 +327,14 @@ public class Autocomplete {
          * Add the word with given weight to the trie. If word already exists in the
          * trie, no new nodes should be created, but the weight of word should be
          * updated.
-         * 
+         *
          * In adding a word, this method should do the following: Create any
          * necessary intermediate nodes if they do not exist. Update the
          * subtreeMaxWeight of all nodes in the path from root to the node
          * representing word. Set the value of myWord, myWeight, isWord, and
          * mySubtreeMaxWeight of the node corresponding to the added word to the
          * correct values
-         * 
+         *
          * @throws a
          *             NullPointerException if word is null
          * @throws an
@@ -341,8 +342,7 @@ public class Autocomplete {
          */
         @SuppressWarnings("JavadocReference")
         private void add(String word, double weight) {
-            // TODO: Implement add
-            // NullPointerException if word is null
+            // NullPointerException if word is null.
             if (word == null)
                 throw new NullPointerException("Word is null.");
 
@@ -357,6 +357,8 @@ public class Autocomplete {
             // Loop that iterates through the word, compares and updates weights
             // for all nodes,and creates necessary intermediate nodes.
             for (char character : word.toCharArray()) {
+
+                // Check if mySubtreeMaxWeight needs to be updated.
                 if (node.mySubtreeMaxWeight < weight) {
 
                     // Updates mySubtreeMaxWeight
@@ -369,6 +371,7 @@ public class Autocomplete {
                     // Creation
                     node.children.put(character, new Node(character, node, weight));
 
+                // Set again for looping.
                 } node = node.getChild(character);
             }
 
@@ -390,7 +393,7 @@ public class Autocomplete {
          * those words. e.g. If terms is {air:3, bat:2, bell:4, boy:1}, then
          * topKMatches("b", 2) should return {"bell", "bat"}, but topKMatches("a",
          * 2) should return {"air"}
-         * 
+         *
          * @param prefix
          *            - A prefix which all returned words must start with
          * @param k
@@ -404,49 +407,79 @@ public class Autocomplete {
          */
         @SuppressWarnings("JavadocReference")
         public Iterable<String> topMatches(String prefix, int k) {
-            // TODO: Implement topKMatches
+
+            // NullPointerException if prefix is null.
             if (prefix == null) {
-                throw new NullPointerException("Prefix is null");
+                throw new NullPointerException("Prefix is null.");
             }
 
+            // New node that currently points to the root node.
             Node node = myRoot;
 
-            // Natural ordering
-            PriorityQueue<Node> naturalOrderList =
-                    new PriorityQueue<>(k, new Node.ReverseSubtreeMaxWeightComparator());
-            LinkedList<String> tempList = new LinkedList<>();
+            // A weight-sorted list of words.
+            List<String> wordsList = new ArrayList<>();
+
+            // --- PDF INSTRUCTIONS ---
+            // To find the top k matches as quickly as possible, we will use what is known as a search
+            // algorithm - keep a PriorityQueue of Nodes, sorted by mySubtreeMaxWeight. Start with
+            // just the root in the PriorityQueue, and pop Nodes off the PriorityQueue one by one.
+            PriorityQueue<Node> nodeList = new PriorityQueue<>(new Node.ReverseSubtreeMaxWeightComparator());
+
+            // Loop to see if any top k matches
             for (char character : prefix.toCharArray()) {
+
+                // Check for match in the children Map<>.
                 if (node.children.containsKey(character)) {
+
+                    // Get node if matched.
                     node = node.getChild(character);
+
+                // Return an empty iterable if none matched.
                 } else {
-                    return tempList;
+                    return wordsList;
                 }
-            }
 
-            naturalOrderList.add(node);
+            // Add the node to the priority queue.
+            } nodeList.add(node);
 
-            while (naturalOrderList.size() > 0 && tempList.size() <= k) {
-                node = naturalOrderList.poll();
+            // Check if list of words and nodes are nonempty
+            while (nodeList.size() > 0 && ifWordsListValid(wordsList, k)) {
+
+                // https://docs.oracle.com/javase/7/docs/api/java/util/PriorityQueue.html
+                // Retrieves and removes the head of this queue, or returns null if this queue is empty.
+                // Pop off nodes one by one.
+                node = nodeList.poll();
+
+                // Whenever a visited node is a word -->
+                assert node != null;
                 if (node.isWord) {
-                    tempList.add(node.myWord);
-                    if (tempList.size() >= k) {
+
+                    // --> add it to a weight-sorted list of words.
+                    wordsList.add(node.myWord);
+
+                    // Check so that list of words does not exceed max words to be returned.
+                    if (wordsList.size() >= k) {
                         break;
-                    }
-                    naturalOrderList.addAll(node.children.values());
+
+                    // We will add all its children to the PriorityQueue.
+                    } nodeList.addAll(node.children.values());
                 }
             }
 
-            if (tempList.size() <= k) {
-                return tempList;
+            // Check if words list is valid.
+            if (ifWordsListValid(wordsList, k)) {
+                return wordsList;
             }
 
-            return tempList.subList(0, k);
+            // Return in descending order. Avoid NullPointerException by making sure
+            // k is not exceeded.
+            return wordsList.subList(0, k);
         }
 
         /**
          * Given a prefix, returns the largest-weight word in the trie starting with
          * that prefix.
-         * 
+         *
          * @param prefix
          *            - the prefix the returned word should start with
          * @return The word from with the largest weight starting with prefix, or an
@@ -456,34 +489,44 @@ public class Autocomplete {
          */
         @SuppressWarnings("JavadocReference")
         public String topMatch(String prefix) {
-            // TODO: Implement topMatch
 
             // NullPointerException if the prefix is null
             if (prefix == null)
-                throw new NullPointerException("Prefix is null");
+                throw new NullPointerException("Prefix is null.");
 
             // New node that currently points to the root node.
             Node node = myRoot;
 
-
+            // Locate the word that starts with the prefix
             for (char i : prefix.toCharArray()){
-                if (node.children.containsKey(i))
+                if (node.children.containsKey(i)) {
                     node = node.getChild(i);
-                //else
-                //    return "";
+
+                // Return empty string if none exists
+                } else {
+                    return "";
+                }
             }
 
-            double largestWeightWord = node.mySubtreeMaxWeight;
+            // Holds the value for the largest word's weight starting
+            // with prefix.
+            double largestWordWeight = node.mySubtreeMaxWeight;
 
-            if (node.myWeight == largestWeightWord)
+            // If the word found in the loop holds the largest weight of the
+            // tree, return it.
+            if (node.myWeight == largestWordWeight)
                 return node.myWord;
 
-            while(node.myWeight != largestWeightWord){
+            // Keep searching through all the children in the tree if not and
+            // set the node / break out of the loop if found.
+            while(node.myWeight != largestWordWeight){
                 for (Node child : node.children.values())
-                    if(child.mySubtreeMaxWeight == largestWeightWord){
+                    if(child.mySubtreeMaxWeight == largestWordWeight){
                         node = child;
                         break;
                     }
+
+            // Return the word that is set o
             } return node.myWord;
         }
 
@@ -492,21 +535,33 @@ public class Autocomplete {
          * return 0.0
          */
         public double weightOf(String term) {
-            // TODO complete weightOf
 
             // New node that currently points to the root node.
             Node node = myRoot;
+
+            // Standard loop to iterate through the term.
             for (char character : term.toCharArray()) {
+
+                // Check to see if term exists in the children Map<>.
                 if (node.children.containsKey(character)) {
+
+                    // Set term if matched.
                     node = node.getChild(character);
+
+                // Return 0.0 if the term does not exist.
                 } else {
                     return 0.0;
                 }
             }
 
+            // If the term has been set, return its weight.
             if (node.isWord) {
                 return node.myWeight;
-            } return 0.0;
+
+            // 0.0 default else
+            } else {
+                return 0.0;
+            }
         }
 
         /**
@@ -523,6 +578,10 @@ public class Autocomplete {
          */
         public Iterable<String> spellCheck(String word, int dist, int k) {
             return null;
+        }
+
+        boolean ifWordsListValid(List<String> list, int k) {
+            return list.size() <= k;
         }
     }
 }
