@@ -4,9 +4,7 @@ import java.util.PriorityQueue;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Collections;
-import java.util.PriorityQueue;
 
 @SuppressWarnings("ALL")
 public class Autocomplete {
