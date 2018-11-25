@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.Collections;
 
-@SuppressWarnings("ALL")
 public class Autocomplete {
         /**
          * Uses binary search to find the index of the first Term in the passed in
@@ -282,7 +281,6 @@ public class Autocomplete {
          * return 0.0
          */
         public double weightOf(String term) {
-            // TODO complete weightOf
             return 0.0;
         }
     }
@@ -341,6 +339,7 @@ public class Autocomplete {
          * @throws an
          *             IllegalArgumentException if weight is negative.
          */
+        @SuppressWarnings("JavadocReference")
         private void add(String word, double weight) {
             // TODO: Implement add
             // NullPointerException if word is null
@@ -403,6 +402,7 @@ public class Autocomplete {
          * @throws a
          *             NullPointerException if prefix is null
          */
+        @SuppressWarnings("JavadocReference")
         public Iterable<String> topMatches(String prefix, int k) {
             // TODO: Implement topKMatches
             if (prefix == null) {
@@ -413,8 +413,8 @@ public class Autocomplete {
 
             // Natural ordering
             PriorityQueue<Node> naturalOrderList =
-                    new PriorityQueue<Node>(k, new Node.ReverseSubtreeMaxWeightComparator());
-            LinkedList<String> tempList = new LinkedList<String>();
+                    new PriorityQueue<>(k, new Node.ReverseSubtreeMaxWeightComparator());
+            LinkedList<String> tempList = new LinkedList<>();
             for (char character : prefix.toCharArray()) {
                 if (node.children.containsKey(character)) {
                     node = node.getChild(character);
@@ -432,9 +432,7 @@ public class Autocomplete {
                     if (tempList.size() >= k) {
                         break;
                     }
-                    for (Node tempNode : node.children.values()) {
-                        naturalOrderList.add(tempNode);
-                    }
+                    naturalOrderList.addAll(node.children.values());
                 }
             }
 
@@ -456,6 +454,7 @@ public class Autocomplete {
          * @throws a
          *             NullPointerException if the prefix is null
          */
+        @SuppressWarnings("JavadocReference")
         public String topMatch(String prefix) {
             // TODO: Implement topMatch
 
