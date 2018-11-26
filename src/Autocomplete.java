@@ -499,14 +499,12 @@ public class Autocomplete {
             // New node that currently points to the root node.
             Node node = myRoot;
 
-            if (!prefix.equals("")) {
-                node = myRoot.getChild(prefix.charAt(0));
-            }
-
             // Locate the word that starts with the prefix
             for (char i : prefix.toCharArray()) {
                 if (node.children.containsKey(i)) {
                     node = node.getChild(i);
+                } else {
+                  return "";
                 }
             }
 
