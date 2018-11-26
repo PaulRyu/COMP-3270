@@ -416,17 +416,16 @@ public class Autocomplete {
             // New node that currently points to the root node.
             Node node = myRoot;
 
-            // A weight-sorted list of words.
-            List<String> wordsList = new ArrayList<>();
-
             // --- PDF INSTRUCTIONS ---
             // To find the top k matches as quickly as possible, we will use what is known as a search
             // algorithm - keep a PriorityQueue of Nodes, sorted by mySubtreeMaxWeight. Start with
             // just the root in the PriorityQueue, and pop Nodes off the PriorityQueue one by one.
             PriorityQueue<Node> nodeList = new PriorityQueue<>(new Node.ReverseSubtreeMaxWeightComparator());
 
+            List<String> wordsList = new ArrayList<>();
+
             // Loop to see if any top k matches
-            for (char character : prefix.toCharArray()) {
+            for (char character : prefix.toCharArray()){
 
                 // Check for match in the children Map<>.
                 if (node.children.containsKey(character)) {
@@ -434,16 +433,16 @@ public class Autocomplete {
                     // Get node if matched.
                     node = node.getChild(character);
 
-                // Return an empty iterable if none matched.
                 } else {
+
+                    // Return an empty iterable if none matched.
                     return wordsList;
                 }
-
             // Add the node to the priority queue.
             } nodeList.add(node);
 
             // Check if list of words and nodes are nonempty
-            while (nodeList.size() > 0 && ifWordsListValid(wordsList, k)) {
+            while (nodeList.size() > 0 && ifWordsListValid(wordsList, k)){
 
                 // https://docs.oracle.com/javase/7/docs/api/java/util/PriorityQueue.html
                 // Retrieves and removes the head of this queue, or returns null if this queue is empty.
@@ -452,30 +451,33 @@ public class Autocomplete {
 
                 // Whenever a visited node is a word -->
                 assert node != null;
-                if (node.isWord) {
 
-                    // --> add it to a weight-sorted list of words.
+                // --> add it to a weight-sorted list of words.
+                if (node.isWord){
                     wordsList.add(node.myWord);
 
-                    // Check so that list of words does not exceed max words to be returned.
-                    if (wordsList.size() >= k) {
+                    // Check and break so that size doesn't exceed maximum words.
+                    if (wordsList.size() >= k)
                         break;
 
-                    // We will add all its children to the PriorityQueue.
-                    } nodeList.addAll(node.children.values());
-                }
+                // We will add all its children to the PriorityQueue.
+                } nodeList.addAll(node.children.values());
             }
 
             // Check if words list is valid.
             if (ifWordsListValid(wordsList, k)) {
                 return wordsList;
-            }
 
             // Return in descending order. Avoid NullPointerException by making sure
             // k is not exceeded.
-            return wordsList.subList(0, k);
+            } else {
+                return wordsList.subList(0, k);
+            }
         }
 
+        boolean ifWordsListValid(List<String> list, int k) {
+            return list.size() <= k;
+        }
         /**
          * Given a prefix, returns the largest-weight word in the trie starting with
          * that prefix.
@@ -503,9 +505,10 @@ public class Autocomplete {
                     node = node.getChild(i);
 
                 // Return empty string if none exists
-                } else {
-                    return "";
                 }
+//                else {
+//                    return "";
+//                }
             }
 
             // Holds the value for the largest word's weight starting
@@ -580,8 +583,6 @@ public class Autocomplete {
             return null;
         }
 
-        boolean ifWordsListValid(List<String> list, int k) {
-            return list.size() <= k;
-        }
+
     }
 }
