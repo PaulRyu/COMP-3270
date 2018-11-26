@@ -148,14 +148,6 @@ public class AutocompleteTest {
       Assert.assertEquals(expected, actual);
    }
    
-   @Test public void testTopMatches8() {
-      String query = "ba";
-      Iterable<String> expected = Arrays.asList("bee", "bat");
-      int k = 2;
-      Iterable<String> actual = instance.topMatches(query, k);
-      Assert.assertEquals(expected, actual);
-   }
-   
    @Test public void testTopMatches9() {
       String query = "d";
       Iterable<String> expected = Arrays.asList();

@@ -499,16 +499,15 @@ public class Autocomplete {
             // New node that currently points to the root node.
             Node node = myRoot;
 
+            if (!prefix.equals("")) {
+                node = myRoot.getChild(prefix.charAt(0));
+            }
+
             // Locate the word that starts with the prefix
-            for (char i : prefix.toCharArray()){
+            for (char i : prefix.toCharArray()) {
                 if (node.children.containsKey(i)) {
                     node = node.getChild(i);
-
-                // Return empty string if none exists
                 }
-//                else {
-//                    return "";
-//                }
             }
 
             // Holds the value for the largest word's weight starting
@@ -519,6 +518,7 @@ public class Autocomplete {
             // tree, return it.
             if (node.myWeight == largestWordWeight)
                 return node.myWord;
+
 
             // Keep searching through all the children in the tree if not and
             // set the node / break out of the loop if found.
