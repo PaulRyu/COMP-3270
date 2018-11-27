@@ -1,6 +1,23 @@
-Name: firstname lastname
-AUID: abc123
-Hours Spent: Give an exact (decimal) number here
-Consulted With: provide names or AUID of any students, TAs, or professors you consulted with on the assignment. If you did not consult with anyone, you must explicitly write NONE.
-Resources Used: Any books, papers, or online resources. If you did not use any outside resources, you must explicitly write NONE 
-Impressions: Your answer here
+Name: Paul Chong
+AUID: 903222742, phc0004
+Hours Spent: 19 hours, unknown minutes and seconds
+Consulted With: The internet (mainly StackOverflow and documentations)
+Resources Used: Sources (These are all mentioned in my submission):
+                        https://www.quora.com/What-is-the-complexity-of-Trie
+                        https://docs.oracle.com/javase/7/docs/api/java/util/PriorityQueue.html
+                        https://www.geeksforgeeks.org/java-string-tochararray-example/
+                        https://stackoverflow.com/questions/3413586/string-to-string-array-conversion-in-java
+                        https://stackoverflow.com/questions/196830/what-is-the-easiest-best-most-correct-way-to-iterate-through-the-characters-of-a
+                        https://stackoverflow.com/questions/16246821/how-to-get-values-and-keys-from-hashmap
+                        https://stackoverflow.com/questions/12321177/arraylist-or-list-declaration-in-java
+                        https://www.geeksforgeeks.org/hashmap-containskey-method-in-java/
+                        https://stackoverflow.com/questions/14601016/is-using-java-map-containskey-redundant-when-using-map-get
+
+                        Not mentioned:
+                        I used the Brute Force topMatch, topMatches, and weightOf codes in Autocomplete.java because
+                        I feel like it isn't cheating to use code that's given to us in the files.
+
+Impressions: This laboratory assignment wasn't as difficult as I thought it would be to complete but the deliverable
+was very challenging because it made me inspect my code and analyze the complexities for the first time since the
+data structures course here. It was very satisfying to see the differences between my code and BruteForce / Binary Search
+time complexities.

@@ -356,6 +356,9 @@ public class Autocomplete {
 
             // Loop that iterates through the word, compares and updates weights
             // for all nodes,and creates necessary intermediate nodes.
+            // https://www.geeksforgeeks.org/java-string-tochararray-example/
+            // https://stackoverflow.com/questions/196830/what-is-the-easiest-best-most-correct-way-to-iterate-through-the-characters-of-a
+            //       I used the answer by Dave Cheney and jjnguy.
             for (char character : word.toCharArray()) {
 
                 // Check if mySubtreeMaxWeight needs to be updated.
@@ -366,6 +369,8 @@ public class Autocomplete {
                 }
 
                 // If the necessary intermediate node does not exist, create it.
+                // https://stackoverflow.com/questions/14601016/is-using-java-map-containskey-redundant-when-using-map-get
+                //      I used the answer by Vineeth Chitteti and Evgeniy Dorofeev
                 if (!node.children.containsKey(character)) {
 
                     // Creation
@@ -425,6 +430,8 @@ public class Autocomplete {
             // just the root in the PriorityQueue, and pop Nodes off the PriorityQueue one by one.
             PriorityQueue<Node> nodeList = new PriorityQueue<>(new Node.ReverseSubtreeMaxWeightComparator());
 
+            // https://stackoverflow.com/questions/12321177/arraylist-or-list-declaration-in-java
+            //      I used kosa's answer.
             List<String> wordsList = new ArrayList<>();
 
             // Loop to see if any top k matches
@@ -498,6 +505,8 @@ public class Autocomplete {
             for (char i : prefix.toCharArray()) {
                 if (node.children.containsKey(i)) {
                     node = node.getChild(i);
+
+                // This handles the edge case where one character or " " is submitted.
                 } else {
                   return "";
                 }
@@ -516,8 +525,13 @@ public class Autocomplete {
             // Keep searching through all the children in the tree if not and
             // set the node / break out of the loop if found.
             while(node.myWeight != largestWordWeight){
+
+                // https://stackoverflow.com/questions/16246821/how-to-get-values-and-keys-from-hashmap
+                //      I used Bohemian's answer.
                 for (Node child : node.children.values())
                     if(child.mySubtreeMaxWeight == largestWordWeight){
+
+                        // Make node the largest.
                         node = child;
                         break;
                     }
@@ -548,16 +562,9 @@ public class Autocomplete {
                 } else {
                     return 0.0;
                 }
-            }
 
-            // If the term has been set, return its weight.
-            if (node.isWord) {
-                return node.myWeight;
-
-            // 0.0 default else
-            } else {
-                return 0.0;
-            }
+            // If not 0.0, return here.
+            } return node.myWeight;
         }
 
         /**

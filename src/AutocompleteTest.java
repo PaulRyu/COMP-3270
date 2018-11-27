@@ -1,13 +1,12 @@
-/*************************************************************************
- * @author Paul Chong
- * 
- * Test cases for Autocomplete.java
- * Submitted: 26 November 2018
- * Course: COMP 3270
- * Institution: Auburn University
- * 
- *************************************************************************/
-/* Don't modify anything under this line */
+/*
+ @author Paul Chong
+  *
+  * Test cases for Autocomplete.java
+  * Submitted: 26 November 2018
+  * Course: COMP 3270
+  * Institution: Auburn University
+
+ */
 import org.junit.Assert;
 import java.util.Arrays;
 import java.util.Collections;
