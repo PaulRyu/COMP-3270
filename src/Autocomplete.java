@@ -369,7 +369,10 @@ public class Autocomplete {
                 if (!node.children.containsKey(character)) {
 
                     // Creation
-                    node.children.put(character, new Node(character, node, weight));
+                    Node child = new Node(character, node, weight);
+
+                    // Put child into children
+                    node.children.put(character, child);
 
                 // Set again for looping.
                 } node = node.getChild(character);
@@ -462,17 +465,9 @@ public class Autocomplete {
 
                 // We will add all its children to the PriorityQueue.
                 } nodeList.addAll(node.children.values());
-            }
 
-            // Check if words list is valid.
-            if (ifWordsListValid(wordsList, k)) {
-                return wordsList;
-
-            // Return in descending order. Avoid NullPointerException by making sure
-            // k is not exceeded.
-            } else {
-                return wordsList.subList(0, k);
-            }
+            // Return the list of correctly weighted-sorted words.
+            } return wordsList;
         }
 
         boolean ifWordsListValid(List<String> list, int k) {
